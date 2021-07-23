@@ -51,8 +51,8 @@ class EventStoreDb implements EventStore {
         private readonly dbClient: EventStoreDBClient
     ) { }
 
-    public stream<T extends Event>(name: string): EventStream<T> {
-        return new EventStoreDbStream<T>(this.dbClient, name)
+    public stream<E extends Event>(name: string): EventStream<E> {
+        return new EventStoreDbStream<E>(this.dbClient, name)
     }
 
 }

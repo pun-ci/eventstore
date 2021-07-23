@@ -16,7 +16,7 @@ export interface EventStream<E extends Event> {
 
 export interface EventStore {
 
-    stream: <T extends Event>(name: string) => EventStream<T>
+    stream: <E extends Event>(name: string) => EventStream<E>
 
 }
 

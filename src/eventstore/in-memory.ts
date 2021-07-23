@@ -22,11 +22,11 @@ export class InMemoryEventStore implements EventStore {
 
     private readonly streams: Map<string, InMemoryEventStream<Event>> = new Map()
 
-    public stream<T extends Event>(name: string): EventStream<T> {
+    public stream<E extends Event>(name: string): EventStream<E> {
         if (!this.streams.has(name)) {
-            this.streams.set(name, new InMemoryEventStream<T>())
+            this.streams.set(name, new InMemoryEventStream<E>())
         }
-        return this.streams.get(name) as unknown as EventStream<T>
+        return this.streams.get(name) as unknown as EventStream<E>
     }
 
 }
