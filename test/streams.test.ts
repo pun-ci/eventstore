@@ -1,13 +1,14 @@
-import { Event, InvalidEvent, InMemoryEventStore, eventStoreDb } from '../src'
+import { Event, InvalidEvent, inMemoryEventStore, eventStoreDb } from '../src'
 
 type AddEvent = Event<'add', { addend: number }>
 type SubstractEvent = Event<'substract', { subtrahend: number }>
 type MultiplyEvent = Event<'multiply', { multiplicant: number }>
+
 type OperatorEvent = AddEvent | SubstractEvent | MultiplyEvent
 
 const testProvider = [
     {
-        createEventStore: () => new InMemoryEventStore(),
+        createEventStore: () => inMemoryEventStore(),
         description: 'In-memory Event Store streams'
     },
     {
@@ -20,9 +21,11 @@ const testProvider = [
 
 testProvider.forEach(testData => {
     describe(testData.description, () => {
-
         it('Iterate through multiple streams', async () => {
-            const store = testData.createEventStore()
+            const store = await testData.createEventStore()
+            // .waitUntilAvailable({
+            //     timeoutInMillisecs: 5
+            // })
             const eventStreams: Array<{
                 name: string
                 events: OperatorEvent[]
@@ -51,14 +54,13 @@ testProvider.forEach(testData => {
                 },
                 {
                     name: `stream-3-${Date.now()}`,
-                    events:
-                            [
-                                { type: 'add', data: { addend: 2 } },
-                                { type: 'multiply', data: { multiplicant: 2 } },
-                                { type: 'multiply', data: { multiplicant: 2 } },
-                                { type: 'multiply', data: { multiplicant: 2 } },
-                                { type: 'multiply', data: { multiplicant: 2 } }
-                            ],
+                    events: [
+                        { type: 'add', data: { addend: 2 } },
+                        { type: 'multiply', data: { multiplicant: 2 } },
+                        { type: 'multiply', data: { multiplicant: 2 } },
+                        { type: 'multiply', data: { multiplicant: 2 } },
+                        { type: 'multiply', data: { multiplicant: 2 } }
+                    ],
                     expectedResult: 32
                 },
                 {
@@ -90,19 +92,5 @@ testProvider.forEach(testData => {
                 expect(result).toBe(stream.expectedResult)
             }
         })
-
     })
-})
-
-describe('Event Store DB', () => {
-
-    it('Throw error on wrong connection string', async () => {
-        const store = eventStoreDb('esdb://wrong-connection')
-        try {
-            await store.stream('test').reduce<null>(null, param => param)
-            fail('Exception not thrown')
-        } catch (err) {
-        }
-    })
-
 })

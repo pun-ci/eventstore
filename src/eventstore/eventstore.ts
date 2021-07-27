@@ -2,7 +2,6 @@ import { Event, EventStore, EventStream, InvalidEvent } from './types'
 import { EventStoreDBClient, jsonEvent, JSONType } from '@eventstore/db-client'
 
 class EventStoreDbStream<E extends Event> implements EventStream<E> {
-
     constructor(
         private readonly dbClient: EventStoreDBClient,
         private readonly name: string
@@ -31,22 +30,19 @@ class EventStoreDbStream<E extends Event> implements EventStream<E> {
     }
 
     private async eventsFromDb(): Promise<E[]> {
-        return (await this.dbClient.readStream(this.name))
-            .map(event => {
-                if (event.event) {
-                    return {
-                        type: event.event.type,
-                        data: event.event.data
-                    } as E
-                }
-                throw new InvalidEvent()
-            })
+        return (await this.dbClient.readStream(this.name)).map(event => {
+            if (event.event) {
+                return {
+                    type: event.event.type,
+                    data: event.event.data
+                } as E
+            }
+            throw new InvalidEvent()
+        })
     }
-
 }
 
 class EventStoreDb implements EventStore {
-
     constructor(
         private readonly dbClient: EventStoreDBClient
     ) { }
@@ -55,6 +51,11 @@ class EventStoreDb implements EventStore {
         return new EventStoreDbStream<E>(this.dbClient, name)
     }
 
+    // public async waitUntilAvailable(
+    //     { timeoutInMillisecs = 5000 }: { timeoutInMillisecs?: number }
+    // ): Promise<EventStore> {
+    //     return this
+    // }
 }
 
 export const eventStoreDb = (connection: string): EventStore => {

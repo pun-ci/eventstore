@@ -18,6 +18,10 @@ export interface EventStore {
 
     stream: <E extends Event>(name: string) => EventStream<E>
 
+    // waitUntilAvailable: (
+    //     { timeoutInMillisecs }: { timeoutInMillisecs?: number }
+    // ) => Promise<EventStore>
+
 }
 
 export class InvalidEvent extends Error { }

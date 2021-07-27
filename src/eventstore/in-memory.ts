@@ -1,7 +1,6 @@
 import { Event, EventStore, EventStream } from './types'
 
 class InMemoryEventStream<E extends Event> implements EventStream<E> {
-
     private readonly events: E[] = []
 
     public async addEvent(event: E): Promise<void> {
@@ -15,11 +14,9 @@ class InMemoryEventStream<E extends Event> implements EventStream<E> {
         }
         return result
     }
-
 }
 
-export class InMemoryEventStore implements EventStore {
-
+class InMemoryEventStore implements EventStore {
     private readonly streams: Map<string, InMemoryEventStream<Event>> = new Map()
 
     public stream<E extends Event>(name: string): EventStream<E> {
@@ -29,4 +26,13 @@ export class InMemoryEventStore implements EventStore {
         return this.streams.get(name) as unknown as EventStream<E>
     }
 
+    // public async waitUntilAvailable(
+    //     { timeoutInMillisecs = 5000 }: { timeoutInMillisecs?: number }
+    // ): Promise<EventStore> {
+    //     return this
+    // }
+}
+
+export const inMemoryEventStore = (): EventStore => {
+    return new InMemoryEventStore()
 }

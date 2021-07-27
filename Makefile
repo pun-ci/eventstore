@@ -26,9 +26,9 @@ docker:
 		eventstore/eventstore:21.2.0-buster-slim
 
 lint: node_modules
-	node_modules/.bin/eslint . --ext .ts
+	node_modules/.bin/eslint .
 
 lint_fix: node_modules
-	node_modules/.bin/eslint . --ext .ts --fix
+	node_modules/.bin/eslint . --fix
 
 verify: lint test
