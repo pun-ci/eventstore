@@ -1,4 +1,4 @@
-import { Event, EventStore, EventStream } from './types'
+import { Event, EventStore, EventStream, StreamReducer } from './types'
 
 class InMemoryEventStream<E extends Event> implements EventStream<E> {
     private readonly events: E[] = []
@@ -7,10 +7,10 @@ class InMemoryEventStream<E extends Event> implements EventStream<E> {
         this.events.push(event)
     }
 
-    public async reduce<T>(initialValue: T, reducer: (current: T, event: E) => T): Promise<T> {
-        let result: T = initialValue
+    public async reduce<T>(initialValue: T, reducer: StreamReducer<T, E>): Promise<T> {
+        let result = initialValue
         for (const event of this.events) {
-            result = reducer(result, event)
+            result = reducer[event.type as E['type']](result, event.data as unknown as never)
         }
         return result
     }

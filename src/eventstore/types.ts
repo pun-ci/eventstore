@@ -10,7 +10,7 @@ export interface EventStream<E extends Event> {
 
     addEvent: (event: E) => Promise<void>
 
-    reduce: <T>(initialValue: T, reducer: (current: T, event: E) => T) => Promise<T>
+    reduce: <T>(initialValue: T, reducer: StreamReducer<T, E>) => Promise<T>
 
 }
 
@@ -22,6 +22,10 @@ export interface EventStore {
     //     { timeoutInMillisecs }: { timeoutInMillisecs?: number }
     // ) => Promise<EventStore>
 
+}
+
+export type StreamReducer<T, E extends Event> = {
+    [event in E as event['type']]: (current: T, eventData: event['data']) => T
 }
 
 export class InvalidEvent extends Error { }

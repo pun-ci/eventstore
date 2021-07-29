@@ -1,10 +1,17 @@
-import { Event, InvalidEvent, inMemoryEventStore, eventStoreDb } from '../src'
+import { Event, inMemoryEventStore, eventStoreDb } from '../src'
+import { StreamReducer } from '../src/eventstore/types'
 
 type AddEvent = Event<'add', { addend: number }>
 type SubstractEvent = Event<'substract', { subtrahend: number }>
 type MultiplyEvent = Event<'multiply', { multiplicant: number }>
 
 type OperatorEvent = AddEvent | SubstractEvent | MultiplyEvent
+
+const operatorReducer: StreamReducer<number, OperatorEvent> = {
+    add: (current, eventData) => current + eventData.addend,
+    substract: (current, eventData) => current - eventData.subtrahend,
+    multiply: (current, eventData) => current * eventData.multiplicant
+}
 
 const testProvider = [
     {
@@ -33,23 +40,21 @@ testProvider.forEach(testData => {
             }> = [
                 {
                     name: `stream-1-${Date.now()}`,
-                    events:
-                            [
-                                { type: 'add', data: { addend: 2 } },
-                                { type: 'multiply', data: { multiplicant: 5 } },
-                                { type: 'add', data: { addend: 3 } },
-                                { type: 'substract', data: { subtrahend: 4 } }
-                            ],
+                    events: [
+                        { type: 'add', data: { addend: 2 } },
+                        { type: 'multiply', data: { multiplicant: 5 } },
+                        { type: 'add', data: { addend: 3 } },
+                        { type: 'substract', data: { subtrahend: 4 } }
+                    ],
                     expectedResult: 9
                 },
                 {
                     name: `stream-2-${Date.now()}`,
-                    events:
-                            [
-                                { type: 'add', data: { addend: 1 } },
-                                { type: 'multiply', data: { multiplicant: 0 } },
-                                { type: 'substract', data: { subtrahend: 2 } }
-                            ],
+                    events: [
+                        { type: 'add', data: { addend: 1 } },
+                        { type: 'multiply', data: { multiplicant: 0 } },
+                        { type: 'substract', data: { subtrahend: 2 } }
+                    ],
                     expectedResult: -2
                 },
                 {
@@ -75,20 +80,8 @@ testProvider.forEach(testData => {
                 }
             }))
             for (const stream of eventStreams) {
-                const result = await store.stream<OperatorEvent>(stream.name).reduce<number>(
-                    0, (current: number, event: OperatorEvent) => {
-                        if (event.type === 'add') {
-                            return current + event.data.addend
-                        }
-                        if (event.type === 'substract') {
-                            return current - event.data.subtrahend
-                        }
-                        if (event.type === 'multiply') {
-                            return current * event.data.multiplicant
-                        }
-                        throw new InvalidEvent()
-                    }
-                )
+                const result = await store.stream<OperatorEvent>(stream.name)
+                    .reduce<number>(0, operatorReducer)
                 expect(result).toBe(stream.expectedResult)
             }
         })
