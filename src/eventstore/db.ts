@@ -1,5 +1,6 @@
 import { Event, EventStore, EventStream, InvalidEvent, StreamReducer } from './types'
 import { EventStoreDBClient, jsonEvent, JSONType } from '@eventstore/db-client'
+import { reduceEvents } from './reducer'
 
 class EventStoreDbStream<E extends Event> implements EventStream<E> {
     constructor(
@@ -16,11 +17,8 @@ class EventStoreDbStream<E extends Event> implements EventStream<E> {
 
     public async reduce<T>(initialValue: T, reducer: StreamReducer<T, E>): Promise<T> {
         try {
-            let result = initialValue
-            for (const event of await this.eventsFromDb()) {
-                result = reducer[event.type as E['type']](result, event.data as unknown as never)
-            }
-            return result
+            const events = await this.eventsFromDb()
+            return reduceEvents<E, T>(initialValue, events, reducer)
         } catch (err) {
             if (err.type === 'stream-not-found') {
                 return initialValue

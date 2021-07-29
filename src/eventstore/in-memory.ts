@@ -1,3 +1,4 @@
+import { reduceEvents } from './reducer'
 import { Event, EventStore, EventStream, StreamReducer } from './types'
 
 class InMemoryEventStream<E extends Event> implements EventStream<E> {
@@ -8,11 +9,7 @@ class InMemoryEventStream<E extends Event> implements EventStream<E> {
     }
 
     public async reduce<T>(initialValue: T, reducer: StreamReducer<T, E>): Promise<T> {
-        let result = initialValue
-        for (const event of this.events) {
-            result = reducer[event.type as E['type']](result, event.data as unknown as never)
-        }
-        return result
+        return reduceEvents<E, T>(initialValue, this.events, reducer)
     }
 }
 
