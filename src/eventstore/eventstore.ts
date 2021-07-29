@@ -16,7 +16,7 @@ class EventStoreDbStream<E extends Event> implements EventStream<E> {
 
     public async reduce<T>(initialValue: T, reducer: StreamReducer<T, E>): Promise<T> {
         try {
-            let result: T = initialValue
+            let result = initialValue
             for (const event of await this.eventsFromDb()) {
                 result = reducer[event.type as E['type']](result, event.data as unknown as never)
             }

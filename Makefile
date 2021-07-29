@@ -3,7 +3,7 @@
 default: dist
 
 dist: node_modules src
-	node_modules/.bin/tsc -p . --pretty
+	node_modules/.bin/tsc -p ./src --pretty
 
 watch_test: node_modules
 	node_modules/.bin/jest --watch
