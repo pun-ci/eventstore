@@ -18,9 +18,9 @@ export interface EventStore {
 
     stream: <E extends Event>(name: string) => EventStream<E>
 
-    // waitUntilAvailable: (
-    //     { timeoutInMillisecs }: { timeoutInMillisecs?: number }
-    // ) => Promise<EventStore>
+    waitUntilAvailable: (
+        { timeoutInMillisecs }: { timeoutInMillisecs: number }
+    ) => Promise<EventStore>
 
 }
 

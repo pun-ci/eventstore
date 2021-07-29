@@ -26,11 +26,11 @@ class InMemoryEventStore implements EventStore {
         return this.streams.get(name) as unknown as EventStream<E>
     }
 
-    // public async waitUntilAvailable(
-    //     { timeoutInMillisecs = 5000 }: { timeoutInMillisecs?: number }
-    // ): Promise<EventStore> {
-    //     return this
-    // }
+    public async waitUntilAvailable(
+        { timeoutInMillisecs }: { timeoutInMillisecs: number }
+    ): Promise<EventStore> {
+        return this
+    }
 }
 
 export const inMemoryEventStore = (): EventStore => {

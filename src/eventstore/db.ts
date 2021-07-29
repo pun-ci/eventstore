@@ -51,11 +51,11 @@ class EventStoreDb implements EventStore {
         return new EventStoreDbStream<E>(this.dbClient, name)
     }
 
-    // public async waitUntilAvailable(
-    //     { timeoutInMillisecs = 5000 }: { timeoutInMillisecs?: number }
-    // ): Promise<EventStore> {
-    //     return this
-    // }
+    public async waitUntilAvailable(
+        { timeoutInMillisecs }: { timeoutInMillisecs: number }
+    ): Promise<EventStore> {
+        return this
+    }
 }
 
 export const eventStoreDb = (connection: string): EventStore => {

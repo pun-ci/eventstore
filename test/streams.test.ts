@@ -30,9 +30,9 @@ testProvider.forEach(testData => {
     describe(testData.description, () => {
         it('Iterate through multiple streams', async () => {
             const store = await testData.createEventStore()
-            // .waitUntilAvailable({
-            //     timeoutInMillisecs: 5
-            // })
+                .waitUntilAvailable({
+                    timeoutInMillisecs: 5
+                })
             const eventStreams: Array<{
                 name: string
                 events: OperatorEvent[]
