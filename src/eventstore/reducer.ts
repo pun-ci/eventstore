@@ -6,9 +6,9 @@ export const reduceEvents =
         events: E[],
         reducer: StreamReducer<T, E>
     ): T => {
-        let result = initialValue
+        let current = initialValue
         for (const event of events) {
-            result = reducer[event.type as E['type']](result, event.data as unknown as never)
+            current = reducer[event.type as E['type']](event.data as unknown as never, current)
         }
-        return result
+        return current
     }

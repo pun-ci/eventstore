@@ -11,9 +11,9 @@ type OperatorEvent = AddEvent | SubstractEvent | MultiplyEvent
 type CalculatorReducer = StreamReducer<number, OperatorEvent>
 
 const operatorReducer: CalculatorReducer = {
-    add: (current, eventData) => current + eventData.addend,
-    substract: (current, eventData) => current - eventData.subtrahend,
-    multiply: (current, eventData) => current * eventData.multiplicant
+    add: (eventData, current) => current + eventData.addend,
+    substract: (eventData, current) => current - eventData.subtrahend,
+    multiply: (eventData, current) => current * eventData.multiplicant
 }
 
 const testProvider = [

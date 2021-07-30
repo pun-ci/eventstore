@@ -17,7 +17,7 @@ export interface EventStore {
 }
 
 export type StreamReducer<T, E extends Event> = {
-    [event in E as event['type']]: (current: T, eventData: event['data']) => T
+    [event in E as event['type']]: (eventData: event['data'], current: T) => T
 }
 
 export class InvalidEvent extends Error { }
