@@ -1,5 +1,5 @@
 {
-    "name": "eventstore",
+    "name": "@pun-ci/eventstore",
     "version": "0.1.0",
     "repository": "git@github.com:pun-ci/eventstore.git",
     "author": "Lencse <leventeloki@gmail.com>",
@@ -9,6 +9,9 @@
     "types": "./dist/index.d.ts",
     "engines": {
         "node": ">=16.0.0"
+    },
+    "scripts": {
+        "prepublishOnly": "git clean -fdx && make"
     },
     "dependencies": {
         "@eventstore/db-client": "^1.2.1"
