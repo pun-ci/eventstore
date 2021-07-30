@@ -8,7 +8,9 @@ type MultiplyEvent = Event<'multiply', { multiplicant: number }>
 
 type OperatorEvent = AddEvent | SubstractEvent | MultiplyEvent
 
-const operatorReducer: StreamReducer<number, OperatorEvent> = {
+type CalculatorReducer = StreamReducer<number, OperatorEvent>
+
+const operatorReducer: CalculatorReducer = {
     add: (current, eventData) => current + eventData.addend,
     substract: (current, eventData) => current - eventData.subtrahend,
     multiply: (current, eventData) => current * eventData.multiplicant

@@ -7,17 +7,13 @@ export interface Event<
 }
 
 export interface EventStream<E extends Event> {
-
     addEvent: (event: E) => Promise<void>
-
     reduce: <T>(initialValue: T, reducer: StreamReducer<T, E>) => Promise<T>
 
 }
 
 export interface EventStore {
-
     stream: <E extends Event>(name: string) => EventStream<E>
-
 }
 
 export type StreamReducer<T, E extends Event> = {
