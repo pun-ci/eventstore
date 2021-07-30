@@ -54,11 +54,10 @@ export const eventStoreDb = async (connection: string): Promise<EventStore> => {
     const db = EventStoreDBClient.connectionString(connection)
     try {
         await db.readStream(`non-existent-stream-${Date.now()}`)
-        return new EventStoreDb(db)
     } catch (err) {
-        if (err.type === 'stream-not-found') {
-            return new EventStoreDb(db)
+        if (err.type !== 'stream-not-found') {
+            throw err
         }
-        throw err
     }
+    return new EventStoreDb(db)
 }
