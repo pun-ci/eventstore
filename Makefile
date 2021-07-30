@@ -32,3 +32,7 @@ lint_fix: node_modules
 	node_modules/.bin/eslint . --fix
 
 verify: lint test
+
+node_modules:
+	yarn
+	touch node_modules
