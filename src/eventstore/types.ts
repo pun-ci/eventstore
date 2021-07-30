@@ -18,10 +18,6 @@ export interface EventStore {
 
     stream: <E extends Event>(name: string) => EventStream<E>
 
-    waitUntilAvailable: (
-        { timeoutInMillisecs }: { timeoutInMillisecs: number }
-    ) => Promise<EventStore>
-
 }
 
 export type StreamReducer<T, E extends Event> = {

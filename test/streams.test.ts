@@ -1,5 +1,6 @@
 import { Event, inMemoryEventStore, eventStoreDb } from '../src'
 import { StreamReducer } from '../src/eventstore/types'
+import { config } from './test.config'
 
 type AddEvent = Event<'add', { addend: number }>
 type SubstractEvent = Event<'substract', { subtrahend: number }>
@@ -15,13 +16,11 @@ const operatorReducer: StreamReducer<number, OperatorEvent> = {
 
 const testProvider = [
     {
-        createEventStore: () => inMemoryEventStore(),
+        createEventStore: async () => (await inMemoryEventStore()),
         description: 'In-memory Event Store streams'
     },
     {
-        createEventStore: () => eventStoreDb(
-            'esdb://admin:changeit@localhost:2113?tls=false&tlsVerifyCert=false'
-        ),
+        createEventStore: async () => (await eventStoreDb(config.evenstoreDbUrl)),
         description: 'Event Store DB streams'
     }
 ]
@@ -30,9 +29,6 @@ testProvider.forEach(testData => {
     describe(testData.description, () => {
         it('Iterate through multiple streams', async () => {
             const store = await testData.createEventStore()
-                .waitUntilAvailable({
-                    timeoutInMillisecs: 5
-                })
             const eventStreams: Array<{
                 name: string
                 events: OperatorEvent[]

@@ -48,16 +48,17 @@ class EventStoreDb implements EventStore {
     public stream<E extends Event>(name: string): EventStream<E> {
         return new EventStoreDbStream<E>(this.dbClient, name)
     }
-
-    public async waitUntilAvailable(
-        { timeoutInMillisecs }: { timeoutInMillisecs: number }
-    ): Promise<EventStore> {
-        return this
-    }
 }
 
-export const eventStoreDb = (connection: string): EventStore => {
-    return new EventStoreDb(
-        EventStoreDBClient.connectionString(connection)
-    )
+export const eventStoreDb = async (connection: string): Promise<EventStore> => {
+    const db = EventStoreDBClient.connectionString(connection)
+    try {
+        await db.readStream(`non-existent-stream-${Date.now()}`)
+        return new EventStoreDb(db)
+    } catch (err) {
+        if (err.type === 'stream-not-found') {
+            return new EventStoreDb(db)
+        }
+        throw err
+    }
 }
