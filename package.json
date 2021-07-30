@@ -1,9 +1,20 @@
 {
     "name": "@pun-ci/eventstore",
     "version": "0.1.0",
-    "repository": "git@github.com:pun-ci/eventstore.git",
+    "repository": {
+        "type": "git",
+        "url": "git+ssh://git@github.com/pun-ci/eventstore.git"
+    },
     "author": "Lencse <leventeloki@gmail.com>",
     "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/pun-ci/eventstore/issues"
+    },
+    "homepage": "https://github.com/pun-ci/eventstore#readme",
+    "directories": {
+        "test": "test"
+    },
+    "description": "",
     "type": "module",
     "exports": "./dist/index.js",
     "types": "./dist/index.d.ts",
