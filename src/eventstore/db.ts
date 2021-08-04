@@ -1,6 +1,5 @@
 import { Event, EventStore, EventStream, InvalidEvent, StreamReducer } from './types'
 import {
-    CommandError,
     EventStoreDBClient,
     isCommandError,
     jsonEvent,
@@ -26,7 +25,7 @@ class EventStoreDbStream<E extends Event> implements EventStream<E> {
             const events = await this.eventsFromDb()
             return reduceEvents<E, T>(initialValue, events, reducer)
         } catch (err) {
-            if (isCommandError(err) && isStreamNotFoundError(err)) {
+            if (isStreamNotFoundError(err)) {
                 return initialValue
             }
             throw err
@@ -61,12 +60,13 @@ export const eventStoreDb = async (connection: string): Promise<EventStore> => {
     try {
         await db.readStream(`non-existent-stream-${Date.now()}`)
     } catch (err) {
-        if (!isCommandError(err) || !isStreamNotFoundError(err)) {
+        if (!isStreamNotFoundError(err)) {
             throw err
         }
     }
     return new EventStoreDb(db)
 }
-const isStreamNotFoundError = (err: CommandError) => {
-    return err.type === 'stream-not-found'
+
+const isStreamNotFoundError = (err: Error) => {
+    return isCommandError(err) && err.type === 'stream-not-found'
 }

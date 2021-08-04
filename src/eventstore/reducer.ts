@@ -3,7 +3,7 @@ import { Event, StreamReducer } from './types'
 export const reduceEvents =
     <E extends Event, T>(
         initialValue: T,
-        events: E[],
+        events: readonly E[],
         reducer: StreamReducer<T, E>
     ): T => {
         let current = initialValue

@@ -14,7 +14,7 @@ class InMemoryEventStream<E extends Event> implements EventStream<E> {
 }
 
 class InMemoryEventStore implements EventStore {
-    private readonly streams: Map<string, InMemoryEventStream<Event>> = new Map()
+    private readonly streams = new Map<string, InMemoryEventStream<Event>>()
 
     public stream<E extends Event>(name: string): EventStream<E> {
         if (!this.streams.has(name)) {

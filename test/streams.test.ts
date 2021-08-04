@@ -1,6 +1,5 @@
 import { Event, inMemoryEventStore, eventStoreDb } from '../src'
 import { StreamReducer } from '../src/eventstore/types'
-import { config } from './test.config'
 
 type AddEvent = Event<'add', { addend: number }>
 type SubstractEvent = Event<'substract', { subtrahend: number }>
@@ -16,13 +15,15 @@ const operatorReducer: CalculatorReducer = {
     multiply: (eventData, current) => current * eventData.multiplicant
 }
 
+const TEST_DB_URL = 'esdb://admin:changeit@localhost:2113?tls=false&tlsVerifyCert=false'
+
 const testProvider = [
     {
         createEventStore: async () => (await inMemoryEventStore()),
         description: 'In-memory Event Store streams'
     },
     {
-        createEventStore: async () => (await eventStoreDb(config.evenstoreDbUrl)),
+        createEventStore: async () => (await eventStoreDb(TEST_DB_URL)),
         description: 'Event Store DB streams'
     }
 ]
